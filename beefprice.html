@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>牛肉计算器</title>
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+
+  .container {
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .calculator, .results {
+    padding: 20px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .section {
+    margin: 0 10px;
+  }
+
+  h2 {
+    color: #333;
+    margin-bottom: 20px;
+  }
+
+  input[type=number], input[type=text] {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: calc(100% - 22px);
+    display: block;
+  }
+
+  button {
+    width: calc(100% - 20px);
+    padding: 10px;
+    background-color: #5cb85c;
+    border: none;
+    color: white;
+    font-size: 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  button:hover {
+    background-color: #4cae4c;
+  }
+
+  .results {
+    font-size: 16px;
+    line-height: 1.6;
+    text-align: left;
+  }
+
+  .calculator {
+    width: 200px;
+  }
+</style>
+<script>
+let marketPrices = {
+    beef: 50,  // 牛肉每kg的价格
+    bone: 30,  // 牛骨每kg的价格
+    slice: 40, // 肉片每kg的价格
+    butter: 60 // 牛油每kg的价格
+};
+
+function calculateDistribution(totalAmount, prices) {
+    let weights = {
+        beef: Math.random(),
+        bone: Math.random(),
+        slice: Math.random(),
+        butter: Math.random()
+    };
+
+    let totalWeight = weights.beef + weights.bone + weights.slice + weights.butter;
+
+    weights.beef = (weights.beef / totalWeight) * (totalAmount / prices.beef);
+    weights.bone = (weights.bone / totalWeight) * (totalAmount / prices.bone);
+    weights.slice = (weights.slice / totalWeight) * (totalAmount / prices.slice);
+    weights.butter = (weights.butter / totalWeight) * (totalAmount / prices.butter);
+
+    return weights;
+}
+
+function displayPrices() {
+    var totalAmount = parseFloat(document.getElementById('totalAmount').value);
+
+    // 获取用户输入的单价
+    marketPrices.beef = parseFloat(document.getElementById('beefPriceInput').value);
+    marketPrices.bone = parseFloat(document.getElementById('bonePriceInput').value);
+    marketPrices.slice = parseFloat(document.getElementById('slicePriceInput').value);
+    marketPrices.butter = parseFloat(document.getElementById('butterPriceInput').value);
+
+    var weights = calculateDistribution(totalAmount, marketPrices);
+
+    document.getElementById('results').innerHTML = `
+        <strong>牛肉:</strong> 单价 ${marketPrices.beef.toFixed(1)}元/kg, 质量 ${weights.beef.toFixed(1)}kg<br>
+        <strong>牛骨:</strong> 单价 ${marketPrices.bone.toFixed(1)}元/kg, 质量 ${weights.bone.toFixed(1)}kg<br>
+        <strong>肉片:</strong> 单价 ${marketPrices.slice.toFixed(1)}元/kg, 质量 ${weights.slice.toFixed(1)}kg<br>
+        <strong>牛油:</strong> 单价 ${marketPrices.butter.toFixed(1)}元/kg, 质量 ${weights.butter.toFixed(1)}kg
+    `;
+}
+
+function simpleCalculation() {
+    let expression = document.getElementById('calcInput').value;
+    try {
+        let result = eval(expression);
+        document.getElementById('calcResult').innerText = '结果: ' + result.toFixed(2);
+    } catch (e) {
+        document.getElementById('calcResult').innerText = '无效输入';
+    }
+}
+</script>
+</head>
+<body>
+<div class="container">
+    <div class="section">
+        <h2>牛肉計算器</h2>
+        <div>请输入总金额: <input type="number" id="totalAmount" step="0.1"></div>
+        <h3>调整单价</h3>
+        <div>牛肉单价(元/kg): <input type="number" id="beefPriceInput" value="50" step="0.1"></div>
+        <div>牛骨单价(元/kg): <input type="number" id="bonePriceInput" value="30" step="0.1"></div>
+        <div>肉片单价(元/kg): <input type="number" id="slicePriceInput" value="40" step="0.1"></div>
+        <div>牛油单价(元/kg): <input type="number" id="butterPriceInput" value="60" step="0.1"></div>
+        <button onclick="displayPrices()">计算价格</button>
+        <div class="results" id="results"></div>
+    </div>
+    <div class="section calculator">
+        <h2>简易计算器</h2>
+        <input type="text" id="calcInput" placeholder="输入表达式 (例如 2+2)">
+        <button onclick="simpleCalculation()">计算</button>
+        <div id="calcResult"></div>
+    </div>
+</div>
+</body>
+</html>
